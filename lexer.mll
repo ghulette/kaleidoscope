@@ -9,6 +9,16 @@ let id = ['a'-'z' 'A'-'Z' '_']['A'-'Z' 'a'-'z' '0'-'9' '_']*
 let num = ['1' - '9'](['0'-'9']*)(('.'['0'-'9']+)?)
 
 rule tokenizer = parse    
+  | "extern"   { EXTERN }
+  | "def"      { DEF }
+  | '('        { LPAREN }
+  | ')'        { RPAREN }
+  | ','        { COMMA }
+  | ';'        { SEMI }
+  | '+' as op  { OP op }
+  | '-' as op  { OP op }
+  | '*' as op  { OP op }
+  | '/' as op  { OP op }
   | id as word { ID word }
   | num as n   { NUMBER (float_of_string n) }
   | [' ' '\t'] { tokenizer lexbuf }

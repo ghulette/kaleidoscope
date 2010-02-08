@@ -26,5 +26,5 @@ let rec string_of_expr = function
       | Mult -> "*" 
       | Div -> "/"
     end in
-    x1s ^ ops ^ x2s
+    "(" ^ x1s ^ ops ^ x2s ^ ")"
   | Call (f,_) -> "call " ^ f
