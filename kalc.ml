@@ -29,11 +29,9 @@ let parse chn =
     | Failure x -> Right Unknown_error
     
 let dump _ (proto,exprs) =
-  let dump_expr = fun e -> "\t" ^ (Ast.string_of_expr e) ^ ";" in
-  let expr_strs = List.map dump_expr exprs in
-  let expr_str = String.concat "\n" expr_strs in
   printf "Function: %s\n" (Ast.string_of_proto proto);
-  printf "%s\n" expr_str
+  let dump_expr = fun e -> Llvm.dump_value (Codegen.codegen_expr e) in
+  List.iter dump_expr exprs
 
 let main () =
   match parse stdin with

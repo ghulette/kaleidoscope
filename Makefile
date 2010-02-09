@@ -1,16 +1,20 @@
 OCAMLMAKEFILE = ./OCamlMakefile
 
-CC = g++
-LIBDIRS = /usr/local/lib/ocaml/llvm
-INCDIRS = /usr/local/lib/ocaml/llvm
+# This is required to link with LLVM
+OCAMLLDFLAGS = -cc g++ 
+
+# Suppress a huge number of warnings from g++
+LDFLAGS = -w
+
+RESULT = kalc
 
 LIBS = llvm
-RESULT = kalc
+
 SOURCES = util.ml \
-		  ast.ml \
-		  parser.mly \
-		  lexer.mll \
-		  codegen.ml \
-		  kalc.ml
+		      ast.ml \
+		      parser.mly \
+		      lexer.mll \
+		      codegen.ml \
+		      kalc.ml
 
 include $(OCAMLMAKEFILE)
