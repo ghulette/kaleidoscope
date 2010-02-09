@@ -12,7 +12,12 @@ type expr =
   
 type proto = Prototype of string * string list
 
-type func = Function of proto * expr
+type func = 
+  | Function of proto * expr
+  | Extern of proto
+  
+let prototype_name = function 
+  | Prototype (name,_) -> name
 
 let rec string_of_expr = function
   | Var x -> x
@@ -27,4 +32,12 @@ let rec string_of_expr = function
       | Div -> "/"
     end in
     "(" ^ x1s ^ ops ^ x2s ^ ")"
-  | Call (f,_) -> "call " ^ f
+  | Call (f,args) -> 
+    let arg_strs = List.map string_of_expr args in
+    let args_str = String.concat "," arg_strs in
+    f ^ "(" ^ args_str ^ ")"
+
+let string_of_proto = function
+  | Prototype (f,args) -> 
+    let args_str = String.concat "," args in
+    f ^ "(" ^ args_str ^ ")"

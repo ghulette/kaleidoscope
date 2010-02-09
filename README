@@ -1,0 +1,6 @@
+On Snow Leopard, installing LLVM 2.6 so that it works with OCaml is kind of a
+trick. You need to either build LLVM for x86_64, or OCaml for 32 bit. I went
+the former route, building LLVM from source like so:
+
+./configure
+make EXTRA_OPTIONS=-m64
