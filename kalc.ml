@@ -18,7 +18,7 @@ let parse chn =
   try 
     let parser = Parser.main Lexer.tokenizer in
     match parser (Lexing.from_channel chn) with
-      | Some expr -> Left expr
+      | Some prg -> Left prg
       | None -> Right Unknown_error
   with 
     | Lexer.Illegal_char t -> 
@@ -31,8 +31,9 @@ let parse chn =
 
 let main () =
   match parse stdin with
-    | Left expr ->
-      printf "Input: %s\n" (Ast.string_of_expr expr);
+    | Left prg ->
+      let strs = List.map Ast.string_of_expr prg in
+      printf "Input\n%s\n" (String.concat "\n" strs);
     | Right err ->
       handle_error err
 

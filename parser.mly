@@ -18,13 +18,31 @@ let binop_of_char = function
 %token COMMA, SEMI
 %token EOF
 %start main
-%type <(Ast.expr option)> main
+%type <(Ast.expr list option)> main
 
 %%
 
 main:
-  | expr EOF { Some $1 }
-  |          { None }
+  | stmts EOF { Some $1 }
+  |           { None }
+;
+
+stmts:
+  | stmt SEMI stmts { [$1] @ $3 }
+  | { [] }
+
+stmt:
+  | expr { $1 }
+  | def { $1 }
+  | proto { $1 }
+;
+
+def:
+  | DEF ID LPAREN id_list RPAREN expr { Ast.Var "def" }
+;
+
+proto:
+  | EXTERN ID LPAREN id_list RPAREN { Ast.Var "proto" }
 ;
 
 expr:
@@ -38,4 +56,9 @@ expr:
 expr_list:
   | expr { [$1] }
   | expr COMMA expr_list { [$1] @ $3 }
+;
+
+id_list:
+  | ID { [$1] }
+  | ID COMMA id_list { [$1] @ $3 }
 ;
