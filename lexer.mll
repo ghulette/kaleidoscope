@@ -15,10 +15,10 @@ rule tokenizer = parse
   | ')'        { RPAREN }
   | ','        { COMMA }
   | ';'        { SEMI }
-  | '+' as op  { OP op }
-  | '-' as op  { OP op }
-  | '*' as op  { OP op }
-  | '/' as op  { OP op }
+  | '+'        { PLUS }
+  | '-'        { MINUS }
+  | '*'        { TIMES  }
+  | '/'        { DIV }
   | id as word { ID word }
   | num as n   { NUMBER (float_of_string n) }
   | [' ' '\t'] { tokenizer lexbuf }
