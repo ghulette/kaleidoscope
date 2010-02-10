@@ -19,6 +19,7 @@ rule tokenizer = parse
   | '-'        { MINUS }
   | '*'        { TIMES  }
   | '/'        { DIV }
+  | '<'        { LT }
   | id as word { ID word }
   | num as n   { NUMBER (float_of_string n) }
   | [' ' '\t'] { tokenizer lexbuf }

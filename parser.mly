@@ -13,10 +13,11 @@ let add_def proto exprs =
 
 %token <string> ID, 
 %token <float> NUMBER
-%token PLUS, MINUS, TIMES, DIV
+%token PLUS, MINUS, TIMES, DIV, LT
 %token LPAREN, RPAREN, COMMA, SEMI
 %token DEF, EXTERN
 %token EOF
+%left LT
 %left PLUS, MINUS
 %left TIMES, DIV
 %start main
@@ -54,6 +55,7 @@ bin_expr:
   | expr MINUS expr { Ast.Op (Ast.Sub,$1,$3) }
   | expr TIMES expr { Ast.Op (Ast.Mult,$1,$3) }
   | expr DIV expr { Ast.Op (Ast.Div,$1,$3) }
+  | expr LT expr { Ast.Op (Ast.CmpLT,$1,$3) }
 
 expr_list:
   | expr { [$1] }

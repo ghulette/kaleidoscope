@@ -3,6 +3,7 @@ type binop =
   | Sub
   | Mult
   | Div
+  | CmpLT
 
 type expr =
   | Var of string
@@ -30,6 +31,7 @@ let rec string_of_expr = function
       | Sub -> "-" 
       | Mult -> "*" 
       | Div -> "/"
+      | CmpLT -> "<"
     end in
     "(" ^ x1s ^ ops ^ x2s ^ ")"
   | Call (f,args) -> 
