@@ -1,3 +1,3 @@
-type ('a,'b) either = 
-  | Left of 'a 
-  | Right of 'b
+type 'a either = 
+  | Ok of 'a 
+  | Error of string

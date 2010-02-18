@@ -1,12 +1,11 @@
 %{
 open Printf
 
-let sym_tbl = Hashtbl.create 10;;
+let funcs = ref []
 
-let add_def proto exprs =
-  let key = Ast.prototype_name proto in
-  let value = (proto,exprs) in
-  Hashtbl.add sym_tbl key value
+let add_func proto exprs =
+  let f = Ast.Function (proto,exprs) in
+  funcs := f :: !funcs
 ;;
 
 %}
@@ -21,14 +20,14 @@ let add_def proto exprs =
 %left PLUS, MINUS
 %left TIMES, DIV
 %start main
-%type <((string,(Ast.proto * Ast.expr list)) Hashtbl.t)> main
+%type <Ast.func list> main
 
 %%
 
 main: stmts EOF { 
   let main_proto = Ast.Prototype ("_main",[]) in
-  add_def main_proto $1;
-  sym_tbl
+  add_func main_proto $1;
+  !funcs
 }
 
 stmts:
@@ -41,7 +40,7 @@ stmt:
 
 proto: ID LPAREN id_list RPAREN { Ast.Prototype ($1,$3) }
 
-def: DEF proto expr { add_def $2 [$3]; [] }
+def: DEF proto expr { add_func $2 [$3]; [] }
 
 expr:
   | LPAREN expr RPAREN { $2 }
@@ -55,7 +54,7 @@ bin_expr:
   | expr MINUS expr { Ast.Op (Ast.Sub,$1,$3) }
   | expr TIMES expr { Ast.Op (Ast.Mult,$1,$3) }
   | expr DIV expr { Ast.Op (Ast.Div,$1,$3) }
-  | expr LT expr { Ast.Op (Ast.CmpLT,$1,$3) }
+  | expr LT expr { Ast.Op (Ast.CompLT,$1,$3) }
 
 expr_list:
   | expr { [$1] }

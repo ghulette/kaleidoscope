@@ -1,24 +1,19 @@
-type binop =
-  | Add
-  | Sub
-  | Mult
-  | Div
-  | CmpLT
-
 type expr =
   | Var of string
   | Number of float
   | Op of binop * expr * expr
   | Call of string * expr list
-  
-type proto = Prototype of string * string list
+and binop =
+  | Add
+  | Sub
+  | Mult
+  | Div
+  | CompLT
 
 type func = 
-  | Function of proto * expr
+  | Function of proto * expr list
   | Extern of proto
-  
-let prototype_name = function 
-  | Prototype (name,_) -> name
+and proto = Prototype of string * string list
 
 let rec string_of_expr = function
   | Var x -> x
@@ -31,13 +26,16 @@ let rec string_of_expr = function
       | Sub -> "-" 
       | Mult -> "*" 
       | Div -> "/"
-      | CmpLT -> "<"
-    end in
+      | CompLT -> "<"
+    end in 
     "(" ^ x1s ^ ops ^ x2s ^ ")"
   | Call (f,args) -> 
     let arg_strs = List.map string_of_expr args in
     let args_str = String.concat "," arg_strs in
     f ^ "(" ^ args_str ^ ")"
+
+let proto_name = function 
+  | Prototype (name,_) -> name
 
 let string_of_proto = function
   | Prototype (f,args) -> 

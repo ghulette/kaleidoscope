@@ -8,7 +8,7 @@ LDFLAGS = -w
 
 RESULT = kalc
 
-LIBS = llvm
+LIBS = llvm llvm_analysis
 
 SOURCES = util.ml \
 		      ast.ml \
