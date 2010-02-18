@@ -16,10 +16,16 @@ let parse chn =
       error "Unknown error"
 
 let main () =
+  let ee = Codegen.init_jit () in
   let funcs = parse stdin in
-  List.iter (fun f -> let _ = Codegen.codegen_func f in ()) 
-    (List.rev funcs);
-  Llvm.dump_module Codegen.the_module
+  List.iter (fun f -> ignore (Codegen.codegen_func f)) funcs;
+  Llvm.dump_module Codegen.the_module;
+  let kal_main = begin
+    match Llvm.lookup_function "_main" Codegen.the_module with
+      | Some f -> f
+      | None -> error "Main not found"
+  end in
+  Codegen.run_jit kal_main ee
 
 ;;
 

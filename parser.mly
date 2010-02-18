@@ -3,8 +3,7 @@ open Printf
 
 let funcs = ref []
 
-let add_func proto exprs =
-  let f = Ast.Function (proto,exprs) in
+let def f =
   funcs := f :: !funcs
 ;;
 
@@ -26,8 +25,9 @@ let add_func proto exprs =
 
 main: stmts EOF { 
   let main_proto = Ast.Prototype ("_main",[]) in
-  add_func main_proto $1;
-  !funcs
+  let main_func = Ast.Function (main_proto,$1) in
+  def main_func;
+  List.rev !funcs
 }
 
 stmts:
@@ -37,10 +37,13 @@ stmts:
 stmt:
   | expr { [$1] }
   | def { [] }
+  | extern { [] }
 
 proto: ID LPAREN id_list RPAREN { Ast.Prototype ($1,$3) }
 
-def: DEF proto expr { add_func $2 [$3]; [] }
+def: DEF proto expr { def (Ast.Function ($2,[$3])); [] }
+
+extern: EXTERN proto { def (Ast.Extern $2); [] }
 
 expr:
   | LPAREN expr RPAREN { $2 }

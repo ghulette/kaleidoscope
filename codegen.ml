@@ -1,4 +1,7 @@
+open Printf
 open Llvm
+open Llvm_executionengine
+open Llvm_target
 
 exception Error of string
 
@@ -33,8 +36,7 @@ let rec codegen_expr = function
       if Array.length params == List.length args then () else
         raise (Error "incorrect # arguments passed");
       let args = List.map codegen_expr args in
-      let args_array = Array.of_list args in
-      build_call f args_array "calltmp" builder
+      build_call f (Array.of_list args) "calltmp" builder
 
 let codegen_proto = function
   | Ast.Prototype (name,args) ->
@@ -58,7 +60,8 @@ let codegen_proto = function
     f
 
 let codegen_func = function
-  | Ast.Extern proto -> failwith "Extern not supported"
+  | Ast.Extern proto -> 
+    codegen_proto proto
   | Ast.Function (proto,body) ->
     Hashtbl.clear named_values;
     let the_function = codegen_proto proto in
@@ -72,3 +75,13 @@ let codegen_func = function
     with e ->
       delete_function the_function;
       raise e
+
+let init_jit () = 
+  ignore (initialize_native_target ());
+  let the_module_provider = ModuleProvider.create the_module in
+  ExecutionEngine.create the_module_provider
+  
+let run_jit f ee = 
+  let result_val = ExecutionEngine.run_function f [||] ee in
+  let result = GenericValue.as_float (double_type context) result_val in
+  printf "%0.2f\n" result
