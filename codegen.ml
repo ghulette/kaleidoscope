@@ -82,6 +82,4 @@ let init_jit () =
   ExecutionEngine.create the_module_provider
   
 let run_jit f ee = 
-  let result_val = ExecutionEngine.run_function f [||] ee in
-  let result = GenericValue.as_float (double_type context) result_val in
-  printf "%0.2f\n" result
+  ignore (ExecutionEngine.run_function f [||] ee)

@@ -10,7 +10,8 @@ RESULT = kalc
 
 LIBS = llvm llvm_analysis llvm_executionengine llvm_target
 
-SOURCES = util.ml \
+SOURCES = kstdlib.c \
+          util.ml \
 		      ast.ml \
 		      parser.mly \
 		      lexer.mll \
